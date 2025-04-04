@@ -1,0 +1,59 @@
+import tkinter as tk
+from itertools import permutations
+import random
+import string
+
+# Extended Dictionary List (200+ words)
+DICTIONARY = {
+    "cat", "dog", "tac", "god", "act", "rat", "tar", "art", "bat", "tab", "stab", "bats", "star", "rats", "arts",
+    "apple", "orange", "banana", "grape", "peach", "melon", "berry", "cherry", "plum", "mango", "lemon", "lime", "kiwi",
+    "pear", "fig", "date", "apricot", "pineapple", "coconut", "pomegranate", "watermelon", "strawberry", "blueberry",
+    "blackberry", "raspberry", "cranberry", "gooseberry", "boysenberry", "avocado", "papaya", "passionfruit", "guava",
+    "lychee", "persimmon", "tangerine", "nectarine", "cantaloupe", "honeydew", "grapefruit", "carrot", "onion", "potato",
+    "tomato", "cucumber", "pepper", "lettuce", "spinach", "cabbage", "broccoli", "cauliflower", "zucchini", "squash",
+    "pumpkin", "radish", "turnip", "beetroot", "peas", "corn", "mushroom", "garlic", "ginger", "chili", "celery",
+    "parsley", "cilantro", "basil", "thyme", "rosemary", "oregano", "sage", "dill", "mint", "chives", "lemongrass",
+    "coriander", "fennel", "cinnamon", "clove", "nutmeg", "peppermint", "cardamom", "turmeric", "saffron", "vanilla",
+    "cocoa", "chocolate", "coffee", "tea", "sugar", "honey", "salt", "pepper", "vinegar", "mustard", "ketchup",
+    "mayonnaise", "butter", "cheese", "milk", "yogurt", "cream", "egg", "bread", "rice", "pasta", "noodle", "flour",
+    "biscuit", "cake", "cookie", "pie", "pastry", "sandwich", "burger", "pizza", "soup", "stew", "salad", "sauce",
+    "juice", "smoothie", "shake", "soda", "wine", "beer", "whiskey", "vodka", "rum", "gin", "brandy", "liqueur"
+}
+
+def suggest_random_letters():
+    length = random.randint(2, 4)  # Generate a random word of length 2-4
+    return ''.join(random.choices(string.ascii_lowercase, k=length))
+
+def unscramble_word(event=None):
+    scrambled_word = entry.get().strip().lower()
+    entry.delete(0, tk.END)  # Clear input field
+    
+    if not scrambled_word:
+        result_label.config(text="Please enter a word.")
+        return
+    
+    possible_words = {''.join(p) for p in permutations(scrambled_word)}
+    valid_words = possible_words.intersection(DICTIONARY)
+    
+    if valid_words:
+        result_label.config(text=f"Input: {scrambled_word}\nValid words: " + ", ".join(valid_words))
+    else:
+        suggested_word = suggest_random_letters()
+        result_label.config(text=f"Inputed Letter: {scrambled_word}. \nNo valid word found!\n Try this random letters: {suggested_word}")
+
+# GUI Setup
+root = tk.Tk()
+root.title("Word Unscrambler")
+root.geometry("400x350")
+
+tk.Label(root, text="Enter Scrambled Word:").pack(pady=10)
+entry = tk.Entry(root, font=("Arial", 14))
+entry.pack(pady=5)
+entry.bind("<Return>", unscramble_word)  # Bind Enter key to function
+
+tk.Button(root, text="Unscramble", command=unscramble_word).pack(pady=10)
+
+result_label = tk.Label(root, text="", font=("Arial", 12))
+result_label.pack(pady=10)
+
+root.mainloop()
